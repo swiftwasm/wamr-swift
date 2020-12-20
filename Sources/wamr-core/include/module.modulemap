@@ -1,0 +1,4 @@
+module WAMRCore {
+  umbrella "../../../third-party/wasm-micro-runtime/core/iwasm/include"
+  export *
+}
