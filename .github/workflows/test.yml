@@ -13,9 +13,7 @@ jobs:
     runs-on: Ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
-        with:
-          submodules: true
-          persist-credentials: false
+      - run: git submodule update --init
       - name: Setup swiftenv
         run: |
           git clone https://github.com/kylef/swiftenv.git ~/.swiftenv
@@ -36,9 +34,7 @@ jobs:
     runs-on: macOS-10.15
     steps:
       - uses: actions/checkout@v2
-        with:
-          submodules: true
-          persist-credentials: false
+      - run: git submodule update --init
       - run: sudo xcode-select -s "${{ matrix.xcode-version }}"
       - run: swift --version
       - run: swift test
@@ -47,9 +43,7 @@ jobs:
     runs-on: macOS-10.15
     steps:
       - uses: actions/checkout@v2
-        with:
-          submodules: true
-          persist-credentials: false
+      - run: git submodule update --init
       - run: swift test --enable-code-coverage
       - run: echo "SWIFT_CODECOV_PATH=$(swift test --show-codecov-path)" >> $GITHUB_ENV
       - uses: codecov/codecov-action@v1
