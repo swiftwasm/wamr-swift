@@ -113,6 +113,7 @@ wamrTargets += [
 let package = Package(
     name: "WAMR",
     products: [
+        .library(name: "WAMR", targets: ["WAMR"])
     ],
     targets: wamrTargets + [
         .target(name: "wamr-demo", dependencies: [.target(name: "WAMR")]),
