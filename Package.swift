@@ -121,6 +121,6 @@ let package = Package(
             .target(name: "wamr-core-darwin", condition: .when(platforms: [.macOS, .iOS, .tvOS, .watchOS])),
             .target(name: "wamr-core-linux", condition: .when(platforms: [.linux])),
         ]),
-//        .testTarget(name: "WAMRTests", dependencies: ["WAMR"]),
+        .testTarget(name: "WAMRTests", dependencies: ["WAMR"]),
     ]
 )
