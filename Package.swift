@@ -23,10 +23,8 @@ let macroDefinitions = [
 ]
 
 func wamrCorePlatforms(except: String) -> [String] {
-    try! FileManager.default.contentsOfDirectory(atPath: "\(wamrSource)/core/shared/platform/").filter {
-        $0 != except && $0 != "common"
-    }
-    .map { "wamr/core/shared/platform/\($0.split(separator: "/").last!)" }
+    let platforms = ["riot", "vxworks", "linux-sgx", "alios", "linux", "android", "windows", "zephyr", "nuttx", "esp-idf", "darwin"]
+    return platforms.filter { $0 != except }.map { "wamr/core/shared/platform/\($0.split(separator: "/").last!)" }
 }
 
 func wamrCoreTarget(platform: String) -> Target {
@@ -35,22 +33,16 @@ func wamrCoreTarget(platform: String) -> Target {
         dependencies: [
         ],
         exclude: wamrCorePlatforms(except: platform) + [
-            "wamr/test-tools",
-            "wamr/product-mini",
-            "wamr/samples",
-            "wamr/assembly-script",
-            "wamr/doc",
-            "wamr/CONTRIBUTING.md",
-            "wamr/SECURITY.md",
-            "wamr/LICENSE",
-            "wamr/CODE_OF_CONDUCT.md",
             "wamr/ATTRIBUTIONS.md",
-            "wamr/README.md",
-            "wamr/ORG_CODE_OF_CONDUCT.md",
+            "wamr/CODE_OF_CONDUCT.md",
+            "wamr/CONTRIBUTING.md",
             "wamr/Dockerfile",
-            "wamr/wamr-compiler",
+            "wamr/LICENSE",
+            "wamr/ORG_CODE_OF_CONDUCT.md",
+            "wamr/README.md",
+            "wamr/SECURITY.md",
+            "wamr/assembly-script",
             "wamr/build-scripts",
-            "wamr/wamr-sdk",
             "wamr/core/app-framework",
             "wamr/core/app-mgr",
             "wamr/core/deps",
@@ -73,12 +65,20 @@ func wamrCoreTarget(platform: String) -> Target {
             "wamr/core/iwasm/libraries/thread-mgr",
             "wamr/core/shared/coap",
             "wamr/core/shared/mem-alloc/mem_alloc.cmake",
+            "wamr/core/shared/platform/README.md",
             "wamr/core/shared/platform/\(platform)/shared_platform.cmake",
             "wamr/core/shared/platform/common/freertos",
             "wamr/core/shared/platform/common/math",
             "wamr/core/shared/platform/common/posix/platform_api_posix.cmake",
+            "wamr/core/shared/platform/include",
             "wamr/core/shared/utils/shared_utils.cmake",
             "wamr/core/shared/utils/uncommon/shared_uncommon.cmake",
+            "wamr/doc",
+            "wamr/product-mini",
+            "wamr/samples",
+            "wamr/test-tools",
+            "wamr/wamr-compiler",
+            "wamr/wamr-sdk",
         ],
         sources: [
             "wamr/core/iwasm/common",
