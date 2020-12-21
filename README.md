@@ -7,7 +7,16 @@ Swift WebAssembly runtime powered by WAMR
 To use the wamr-swift library in a SwiftPM project, add the following line to the dependencies in your Package.swift file:
 
 ```swift
-.package(url: "https://github.com/swiftwasm/wamr-swift", from: "0.1.0"),
+let package = Package(
+    name: "Example",
+    dependencies: [
+        .package(name: "WAMR", url: "https://github.com/swiftwasm/wamr-swift", from: "0.1.1"),
+    ],
+    targets: [
+        .target(name: "Example", dependencies: ["WAMR"]),
+    ]
+)
+
 ```
 
 
