@@ -1,4 +1,5 @@
 module WAMRCore {
-  umbrella "../../../third-party/wasm-micro-runtime/core/iwasm/include"
-  export *
+    header "../../../third-party/wasm-micro-runtime/core/iwasm/include/wasm_c_api.h"
+    header "../../../third-party/wasm-micro-runtime/core/iwasm/include/wasm_export.h"
+    export *
 }

@@ -22,13 +22,6 @@ let macroDefinitions = [
     .define("BH_PLATFORM_LINUX", to: "1", .when(platforms: [.linux])),
 ]
 
-let iwasmCommonArchSpecificAsms = {
-    try! FileManager.default.contentsOfDirectory(atPath: "\(wamrSource)/core/iwasm/common/arch").filter {
-        $0.hasSuffix(".s") || $0.hasSuffix(".asm")
-    }
-    .map { "wamr/core/iwasm/common/arch/\($0.split(separator: "/").last!)" }
-}()
-
 func wamrCorePlatforms(except: String) -> [String] {
     try! FileManager.default.contentsOfDirectory(atPath: "\(wamrSource)/core/shared/platform/").filter {
         $0 != except && $0 != "common"
@@ -41,7 +34,7 @@ func wamrCoreTarget(platform: String) -> Target {
         name: "wamr-core-\(platform)",
         dependencies: [
         ],
-        exclude: iwasmCommonArchSpecificAsms + wamrCorePlatforms(except: platform) + [
+        exclude: wamrCorePlatforms(except: platform) + [
             "wamr/test-tools",
             "wamr/product-mini",
             "wamr/samples",
@@ -63,6 +56,7 @@ func wamrCoreTarget(platform: String) -> Target {
             "wamr/core/deps",
             "wamr/core/iwasm/README.md",
             "wamr/core/iwasm/aot",
+            "wamr/core/iwasm/common/arch",
             "wamr/core/iwasm/common/iwasm_common.cmake",
             "wamr/core/iwasm/compilation",
             "wamr/core/iwasm/interpreter/iwasm_interp.cmake",
@@ -88,7 +82,6 @@ func wamrCoreTarget(platform: String) -> Target {
         ],
         sources: [
             "wamr/core/iwasm/common",
-            "wamr/core/iwasm/common/arch/invokeNative_general.c",
             "wamr/core/iwasm/interpreter",
             "wamr/core/iwasm/libraries/libc-builtin",
             "wamr/core/iwasm/libraries/libc-wasi",
@@ -96,6 +89,7 @@ func wamrCoreTarget(platform: String) -> Target {
             "wamr/core/shared/platform/\(platform)",
             "wamr/core/shared/platform/common/posix",
             "wamr/core/shared/utils",
+            "invokeNative.c",
         ],
         cSettings: macroDefinitions + [
             .headerSearchPath("wamr/core/iwasm/common"),
@@ -121,12 +115,8 @@ let package = Package(
     products: [
     ],
     targets: wamrTargets + [
+        .target(name: "wamr-demo", dependencies: [.target(name: "WAMR")]),
         .target(name: "WAMR", dependencies: [.target(name: "wamr-core")]),
-        .target(name: "wamr-demo", dependencies: [
-            .target(name: "wamr-core"),
-            .target(name: "wamr-core-darwin", condition: .when(platforms: [.macOS, .iOS, .tvOS, .watchOS])),
-            .target(name: "wamr-core-linux", condition: .when(platforms: [.linux])),
-        ]),
         .target(name: "wamr-core", dependencies: [
             .target(name: "wamr-core-darwin", condition: .when(platforms: [.macOS, .iOS, .tvOS, .watchOS])),
             .target(name: "wamr-core-linux", condition: .when(platforms: [.linux])),
