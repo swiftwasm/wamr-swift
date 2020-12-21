@@ -1,0 +1,48 @@
+
+name: Run unit tests
+on:
+  pull_request:
+  push:
+    branches: [master]
+jobs:
+  test_on_Linux:
+    name: Build and Test on Linux
+    strategy:
+      matrix:
+        swift-version: ["5.3"]
+    runs-on: Ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup swiftenv
+        run: |
+          git clone https://github.com/kylef/swiftenv.git ~/.swiftenv
+          export SWIFTENV_ROOT="$HOME/.swiftenv"
+          export PATH="$SWIFTENV_ROOT/bin:$PATH"
+          eval "$(swiftenv init -)"
+          echo "$PATH" >> $GITHUB_PATH
+      - name: Install Swift
+        run: swiftenv install "${{ matrix.swift-version }}" --skip-existing
+      - run: swift --version
+      - run: swift test --enable-test-discovery
+  test_on_macOS:
+    name: Build and Test on macOS
+    strategy:
+      matrix:
+        xcode-version:
+          - /Applications/Xcode_12.app
+    runs-on: macOS-10.15
+    steps:
+      - uses: actions/checkout@v2
+      - run: sudo xcode-select -s "${{ matrix.xcode-version }}"
+      - run: swift --version
+      - run: swift test
+  coverage:
+    name: Collect test coverage
+    runs-on: macOS-10.15
+    steps:
+      - uses: actions/checkout@v2
+      - run: swift test --enable-code-coverage
+      - run: echo "SWIFT_CODECOV_PATH=$(swift test --show-codecov-path)" >> $GITHUB_ENV
+      - uses: codecov/codecov-action@v1
+        with:
+          file: ${{ env.SWIFT_CODECOV_PATH }}
