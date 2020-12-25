@@ -1,1 +1,0 @@
-../../wamr/core/iwasm/common/arch/invokeNative_em64.s

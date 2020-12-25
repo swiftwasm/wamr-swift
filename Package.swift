@@ -27,6 +27,14 @@ func wamrCorePlatforms(except: String) -> [String] {
     return platforms.filter { $0 != except }.map { "wamr/core/shared/platform/\($0.split(separator: "/").last!)" }
 }
 
+func invokeNative(_ platform: String) -> String {
+    switch platform {
+    case "darwin": return "invokeNative.s"
+    case "linux": return "invokeNative.c"
+    default: fatalError("unsupported platform \(platform)")
+    }
+}
+
 func wamrCoreTarget(platform: String) -> Target {
     .target(
         name: "wamr-core-\(platform)",
@@ -89,7 +97,7 @@ func wamrCoreTarget(platform: String) -> Target {
             "wamr/core/shared/platform/\(platform)",
             "wamr/core/shared/platform/common/posix",
             "wamr/core/shared/utils",
-            "invokeNative.s",
+            invokeNative(platform),
         ],
         cSettings: macroDefinitions + [
             .headerSearchPath("wamr/core/iwasm/common"),
