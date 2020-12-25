@@ -5,10 +5,6 @@ import Foundation
 
 let wamrSource = "third-party/wasm-micro-runtime"
 
-var wamrTargets: [Target] = []
-
-let wamrPlatforms = ["linux", "darwin"]
-
 let macroDefinitions = [
     "BH_MALLOC": "wasm_runtime_malloc",
     "BH_FREE": "wasm_runtime_free",
@@ -113,10 +109,26 @@ func wamrCoreTarget(platform: String) -> Target {
     )
 }
 
-wamrTargets += [
-    wamrCoreTarget(platform: "linux"),
-    wamrCoreTarget(platform: "darwin"),
-]
+var wamrTargets: [Target] = []
+let wamrCoreDependencies: [Target.Dependency]
+if getenv("WAMR_SWIFT_LINUX_ONLY") != nil {
+    wamrTargets += [
+        wamrCoreTarget(platform: "linux"),
+    ]
+    wamrCoreDependencies = [
+        .target(name: "wamr-core-linux", condition: .when(platforms: [.linux])),
+    ]
+} else {
+    wamrTargets += [
+        wamrCoreTarget(platform: "linux"),
+        wamrCoreTarget(platform: "darwin"),
+    ]
+
+    wamrCoreDependencies = [
+        .target(name: "wamr-core-linux", condition: .when(platforms: [.linux])),
+        .target(name: "wamr-core-darwin", condition: .when(platforms: [.macOS, .iOS, .tvOS, .watchOS])),
+    ]
+}
 
 let package = Package(
     name: "WAMR",
@@ -126,10 +138,7 @@ let package = Package(
     targets: wamrTargets + [
         .target(name: "wamr-demo", dependencies: [.target(name: "WAMR")]),
         .target(name: "WAMR", dependencies: [.target(name: "wamr-core")]),
-        .target(name: "wamr-core", dependencies: [
-            .target(name: "wamr-core-darwin", condition: .when(platforms: [.macOS, .iOS, .tvOS, .watchOS])),
-            .target(name: "wamr-core-linux", condition: .when(platforms: [.linux])),
-        ]),
+        .target(name: "wamr-core", dependencies: wamrCoreDependencies),
         .testTarget(name: "WAMRTests", dependencies: ["WAMR"]),
     ]
 )

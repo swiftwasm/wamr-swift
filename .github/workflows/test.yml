@@ -26,6 +26,8 @@ jobs:
         run: swiftenv install "${{ matrix.swift-version }}" --skip-existing
       - run: swift --version
       - run: swift test --enable-test-discovery
+        env:
+          WAMR_SWIFT_LINUX_ONLY: 1
   test_on_macOS:
     name: Build and Test on macOS
     strategy:
