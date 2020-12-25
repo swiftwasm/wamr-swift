@@ -39,6 +39,8 @@ jobs:
           submodules: true
       - run: sudo xcode-select -s "${{ matrix.xcode-version }}"
       - run: swift --version
+      - name: Check building for x86_64 and arm64
+        run: swift build --arch x86_64 --arch arm64
       - run: swift test
   coverage:
     name: Collect test coverage
