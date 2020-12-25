@@ -89,7 +89,7 @@ func wamrCoreTarget(platform: String) -> Target {
             "wamr/core/shared/platform/\(platform)",
             "wamr/core/shared/platform/common/posix",
             "wamr/core/shared/utils",
-            "invokeNative.c",
+            "invokeNative.s",
         ],
         cSettings: macroDefinitions + [
             .headerSearchPath("wamr/core/iwasm/common"),

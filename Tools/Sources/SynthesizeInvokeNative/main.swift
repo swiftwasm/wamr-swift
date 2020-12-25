@@ -13,7 +13,7 @@ let projectDir = URL(fileURLWithPath: #file)
 let iwasmCommonArchDir = projectDir
     .appendingPathComponent("third-party/wasm-micro-runtime/core/iwasm/common/arch")
 let outputInvokeNativeFile = projectDir
-    .appendingPathComponent("Sources/wamr-core-darwin/invokeNative.c")
+    .appendingPathComponent("Sources/wamr-core-darwin/invokeNative.s")
 
 
 var output = """
@@ -25,8 +25,6 @@ var output = """
 for (index, arch) in supportArchs.enumerated() {
     let file = iwasmCommonArchDir.appendingPathComponent(arch.asmFile)
     let contents = try String(contentsOf: file)
-    let parser = AsmParser(contents: contents)
-    parser.parse()
 
     // prologue
     switch index {
@@ -38,9 +36,7 @@ for (index, arch) in supportArchs.enumerated() {
     output += """
     /* Copied from https://github.com/bytecodealliance/wasm-micro-runtime/blob/main/core/iwasm/common/arch/\(arch.asmFile) */
 
-    __asm__(
-    \(parser.output)
-    );
+    \(contents)
 
     """
     // epilogue

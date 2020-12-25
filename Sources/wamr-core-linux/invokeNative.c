@@ -1,1 +1,0 @@
-../wamr-core-darwin/invokeNative.c
