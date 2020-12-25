@@ -1,1 +1,1 @@
-../wamr-core-darwin/invokeNative.s
+../../wamr/core/iwasm/common/arch/invokeNative_em64.s
