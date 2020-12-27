@@ -1,6 +1,6 @@
 # wamr-swift
 
-Swift WebAssembly runtime powered by WAMR
+Swift WebAssembly runtime powered by [WAMR](https://github.com/bytecodealliance/wasm-micro-runtime).
 
 ## Adding wamr-swift as a Dependency
 
